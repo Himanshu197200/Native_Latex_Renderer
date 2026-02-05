@@ -1,0 +1,54 @@
+apply plugin: 'com.android.library'
+
+group = 'expo.modules.latexview'
+version = '0.7.6'
+
+def expoModulesCorePlugin = new File(project(":expo-modules-core").projectDir.absolutePath, "ExpoModulesCorePlugin.gradle")
+apply from: expoModulesCorePlugin
+applyKotlinExpoModulesCorePlugin()
+useCoreDependencies()
+useExpoPublishing()
+
+
+def useManagedAndroidSdkVersions = false
+if (useManagedAndroidSdkVersions) {
+  useDefaultAndroidSdkVersions()
+} else {
+  buildscript {
+    ext.safeExtGet = { prop, fallback ->
+      rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+    }
+  }
+  project.android {
+    compileSdkVersion safeExtGet("compileSdkVersion", 36)
+    defaultConfig {
+      minSdkVersion safeExtGet("minSdkVersion", 24)
+      targetSdkVersion safeExtGet("targetSdkVersion", 36)
+    }
+  }
+}
+
+android {
+  namespace "expo.modules.latexview"
+  defaultConfig {
+    versionCode 1
+    versionName "0.7.6"
+  }
+  lintOptions {
+    abortOnError false
+  }
+}
+
+repositories {
+  maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+  
+  implementation 'ru.noties:jlatexmath-android:0.2.0'
+  implementation 'ru.noties:jlatexmath-android-font-cyrillic:0.2.0'
+  implementation 'ru.noties:jlatexmath-android-font-greek:0.2.0'
+  
+  
+  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+}
